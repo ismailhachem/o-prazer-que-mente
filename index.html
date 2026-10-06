@@ -317,8 +317,27 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
 var CHECKOUT_URL = "https://pay.kirvano.com/aecd8cd7-e48d-4440-af91-161c826baf5e";
 
 (function(){
+/* Repassa ttclid (TikTok) e UTMs da URL desta página para o link do checkout */
+  function checkoutWithParams(){
+    try {
+      var keys = ['ttclid','utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+      var qs = new URLSearchParams(window.location.search), saved = {}, found = {}, has = false;
+      try { saved = JSON.parse(sessionStorage.getItem('lp_params') || '{}'); } catch (e) {}
+      for (var k = 0; k < keys.length; k++) {
+        var v = qs.get(keys[k]) || saved[keys[k]];
+        if (v) { found[keys[k]] = v; has = true; }
+      }
+      if (!has) return CHECKOUT_URL;
+      try { sessionStorage.setItem('lp_params', JSON.stringify(found)); } catch (e) {}
+      var u = new URL(CHECKOUT_URL);
+      for (var p in found) u.searchParams.set(p, found[p]);
+      return u.toString();
+    } catch (err) { return CHECKOUT_URL; }
+  }
+
   var links = document.querySelectorAll('a[data-checkout]');
-  for (var i = 0; i < links.length; i++) links[i].setAttribute('href', CHECKOUT_URL);
+  var checkoutHref = checkoutWithParams();
+  for (var i = 0; i < links.length; i++) links[i].setAttribute('href', checkoutHref);
 
  /* TikTok Pixel: evento InitiateCheckout ao clicar em qualquer botão de compra */
   function trackCheckout(){
