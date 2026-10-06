@@ -138,6 +138,19 @@ body{padding-top:58px}
 .card{position:relative}
 @media (max-width:759px){footer{padding-bottom:96px}}
 </style>
+ <!-- TikTok Pixel Code Start -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
+;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+
+
+  ttq.load('DB2HLTBC77U5HCCK5SIG');
+  ttq.page();
+}(window, document, 'ttq');
+</script>
+<!-- TikTok Pixel Code End -->
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -306,6 +319,32 @@ var CHECKOUT_URL = "https://pay.kirvano.com/aecd8cd7-e48d-4440-af91-161c826baf5e
 (function(){
   var links = document.querySelectorAll('a[data-checkout]');
   for (var i = 0; i < links.length; i++) links[i].setAttribute('href', CHECKOUT_URL);
+
+ /* TikTok Pixel: evento InitiateCheckout ao clicar em qualquer botão de compra */
+  function trackCheckout(){
+    try {
+      if (window.ttq && typeof ttq.track === 'function') {
+        ttq.track('InitiateCheckout', {
+          contents: [{ content_id: 'prazer-que-mente-ebook', content_type: 'product', content_name: 'O Prazer que Mente' }],
+          content_type: 'product',
+          quantity: 1,
+          value: 27.90,
+          currency: 'BRL'
+        });
+      }
+    } catch (err) {}
+  }
+  for (var j = 0; j < links.length; j++) {
+    links[j].addEventListener('click', function(ev){
+      trackCheckout();
+      /* clique simples: dá um instante para o evento ser enviado antes de sair da página */
+      if (ev.button !== 0 || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey) return;
+      ev.preventDefault();
+      var dest = this.getAttribute('href'), go = false;
+      function leave(){ if (go) return; go = true; window.location.href = dest; }
+      setTimeout(leave, 250);
+    });
+  }
 
   /* Barra fixa (mobile): aparece depois do 1º botão e some na seção da oferta */
   var bar = document.getElementById('sticky');
